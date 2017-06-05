@@ -296,6 +296,28 @@ Twinkle.config.sections = [
 			setDisplayOrder: Twinkle.config.commonSets.csdCriteriaNotificationDisplayOrder
 		},
 
+		// TwinkleConfig.welcomeUserOnSpeedyDeletionNotification (array of strings)
+		// On what types of speedy deletion notifications shall the user be welcomed
+		// with a "firstarticle" notice if his talk page has not yet been created.
+		{
+			name: "welcomeUserOnSpeedyDeletionNotification",
+			label: "在使用以下理由时歡迎頁面建立者（目前不可用）",
+			helptip: "歡迎模板僅在用戶收到通知時加入，使用的模板是{{firstarticle}}。",
+			type: "set",
+			setValues: Twinkle.config.commonSets.csdCriteriaNotification,
+			setDisplayOrder: Twinkle.config.commonSets.csdCriteriaNotificationDisplayOrder
+		},
+
+		// TwinkleConfig.promptForSpeedyDeletionSummary (array of strings)
+		{
+			name: "promptForSpeedyDeletionSummary",
+			label: "使用以下理由刪除時允許編輯刪除理由",
+			adminOnly: true,
+			type: "set",
+			setValues: Twinkle.config.commonSets.csdAndDICriteria,
+			setDisplayOrder: Twinkle.config.commonSets.csdAndDICriteriaDisplayOrder
+		},
+
 		// TwinkleConfig.openUserTalkPageOnSpeedyDelete (array of strings)
 		// What types of actions that should result user talk page to be opened when speedily deleting (admin only)
 		{
