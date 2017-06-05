@@ -2,7 +2,7 @@
 // vim: set noet sts=0 sw=8:
 
 
-(function($){
+(function ($) {
 
 
 /*
@@ -15,7 +15,7 @@
  */
 
 Twinkle.close = function twinkleclose() {
-	if ( !Morebits.userIsInGroup('sysop') || !(/^Wikipedia:(頁面|檔案)存廢討論\/記錄\/\d+\/\d+\/\d+$/.test(mw.config.get('wgPageName'))) ) {
+	if ( !Morebits.userIsInGroup('sysop') || mw.config.get('wgPageName') !== '維基大典:議刪' ) {
 		return;
 	}
 
@@ -26,18 +26,18 @@ Twinkle.close = function twinkleclose() {
 		return span;
 	};
 
-	// 把section序号直接标在h2和h3上以免在用某些编辑器时不正常
-	$('h2:has(.mw-headline),h3:has(.mw-headline)', '#bodyContent').each(function (index, current) {
+	// 把section序号直接标在h1、h2和h3上以免在用某些编辑器时不正常
+	$('h1:has(.mw-headline),h2:has(.mw-headline),h3:has(.mw-headline)', '#bodyContent').each(function (index, current) {
 		current.setAttribute('data-section', index + 1);
 	});
 
-	var selector = ':has(.mw-headline a:only-of-type):not(:has(+ div.NavFrame))';
+	var selector = ':has(.mw-headline a:only-of-type):not(:has(+ div.discussion-archived))';
 	var titles = $('#bodyContent').find('h2' + selector + ':not(:has(+ p + h3)), h3' + selector); // really needs to work on
 
 	var delNode = document.createElement('strong');
 	var delLink = document.createElement('a');
 	delLink.appendChild( spanTag( 'Black', '[' ) );
-	delLink.appendChild( spanTag( 'Red', '关闭讨论' ) );
+	delLink.appendChild( spanTag( 'Red', '結案' ) );
 	delLink.appendChild( spanTag( 'Black', ']' ) );
 	delNode.appendChild(delLink);
 
@@ -67,144 +67,66 @@ Twinkle.close = function twinkleclose() {
 
 // Keep this synchronized with {{delh}}
 Twinkle.close.codes = {
-	'请求无效': {
-		'ir': {
-			label: '请求无效',
+	'無效': {
+		'請求無效': {
+			label: '請求無效',
 			action: 'keep'
 		},
-		'rep': {
-			label: '重复提出，无效',
+		'重複請求': {
+			label: '重複請求，無效',
 			action: 'keep'
 		},
-		'commons': {
-			label: '应在维基共享资源提请',
+		'尋無此頁': {
+			label: '尋無此頁，無效',
 			action: 'keep'
 		},
-		'ne': {
-			label: '目标页面或档案不存在，无效',
-			action: 'keep'
-		},
-		'nq': {
-			label: '提删者未取得提删资格，无效',
-			action: 'keep'
-		}
 	},
-	'保留': {
-		'k': {
-			label: '保留',
+	'留': {
+		'留': {
+			label: '留',
 			action: 'keep'
 		},
-		'sk': {
-			label: '快速保留',
+		'速留': {
+			label: '速留',
 			action: 'keep'
 		},
-		'tk': {
-			label: '暂时保留',
+		'暫留': {
+			label: '暫留',
 			action: 'keep'
 		},
-		'rr': {
-			label: '请求理由消失',
-			action: 'keep'
-		},
-		'dan': {
-			label: '删后重建',
-			action: 'keep'
-		}
 	},
-	'删除': {
-		'd': {
-			label: '删除',
+	'刪': {
+		'刪': {
+			label: '刪',
 			action: 'del',
 			selected: true
 		},
-		'ic': {
-			label: '图像因侵权被删',
+		'速刪': {
+			label: '速刪',
 			action: 'del'
-		}
+		},
 	},
-	'快速删除': {
-		'sd': {
-			label: '快速删除',
-			action: 'del'
-		},
-		'lssd': {
-			label: '无来源或版权资讯，快速删除',
-			action: 'del'
-		},
-		'svg': {
-			label: '已改用SVG图形，快速删除',
-			action: 'del'
-		},
-		'nowcommons': {
-			label: '维基共享资源已提供，快速删除',
-			action: 'del'
-		},
-		'drep': {
-			label: '多次被删除，条目锁定',
-			action: 'del'
-		}
+	'移至他山': {
 	},
-	'转移至其他维基计划': {
-		'twc': {
-			label: '转移至维基共享资源',
+	'其他': {
+		'移至他山': {
+			label: '移至他山',
 			action: 'noop'
 		},
-		'twn': {
-			label: '转移至维基新闻',
+		'立渡': {
+			label: '立渡',
 			action: 'noop'
 		},
-		'tws': {
-			label: '转移至维基文库',
+		'遷': {
+			label: '遷',
 			action: 'noop'
 		},
-		'twb': {
-			label: '转移至维基教科书',
+		'併': {
+			label: '併',
 			action: 'noop'
 		},
-		'twq': {
-			label: '转移至维基语录',
-			action: 'noop'
-		},
-		'twt': {
-			label: '转移至维基词典',
-			action: 'noop'
-		},
-		'two': {
-			label: '转移至其他维基计划',
-			action: 'noop'
-		}
-	},
-	'其他处理方法': {
-		'c': {
-			label: '转交侵权',
-			action: 'noop'
-		},
-		//'m2pfd': {
-		//	label: '转送页面存废讨论',
-		//	action: 'noop'
-		//},
-		'm2ifd': {
-			label: '转送文件存废讨论',
-			action: 'noop'
-		},
-		'r': {
-			label: '重定向',
-			action: 'noop'
-		},
-		'cr': {
-			label: '分类重定向',
-			action: 'noop'
-		},
-		'm': {
-			label: '移动',
-			action: 'noop'
-		},
-		'merge': {
-			label: '并入',
-			action: 'noop'
-		},
-		'nc': {
-			label: '无共识',
+		'無共識': {
+			label: '無共識',
 			action: 'keep'
 		}
 	}
@@ -212,15 +134,14 @@ Twinkle.close.codes = {
 
 Twinkle.close.callback = function twinklecloseCallback(title, section, noop) {
 	var Window = new Morebits.simpleWindow( 400, 150 );
-	Window.setTitle( "关闭存废讨论 \u00B7 " + title );
+	Window.setTitle( "議刪結案 \u00B7 " + title );
 	Window.setScriptName( "Twinkle" );
-	Window.addFooterLink( "Twinkle帮助", "WP:TW/DOC#close" );
 
 	var form = new Morebits.quickForm( Twinkle.close.callback.evaluate );
 
 	form.append( {
 		type: 'select',
-		label: '处理结果：',
+		label: '處理結果：',
 		name: 'sub_group',
 		event: Twinkle.close.callback.change_code
 	} );
@@ -228,14 +149,14 @@ Twinkle.close.callback = function twinklecloseCallback(title, section, noop) {
 	form.append( {
 			type: 'input',
 			name: 'remark',
-			label: '补充说明：'
+			label: '補充說明：'
 	} );
 
 	form.append( {
 		type: 'checkbox',
 		list: [
 			{
-				label: '只关闭讨论，不进行其他操作',
+				label: '只關閉討論，不進行其他操作',
 				value: 'noop',
 				name: 'noop',
 				checked: noop
@@ -330,12 +251,12 @@ Twinkle.close.callback.evaluate = function twinklecloseCallbackEvaluate(e) {
 				Twinkle.close.callbacks.del(params);
 				break;
 			case 'keep':
-				var wikipedia_page = new Morebits.wiki.page( params.title, '移除存废讨论模板' );
+				var wikipedia_page = new Morebits.wiki.page( params.title, '移除議刪模板' );
 				wikipedia_page.setCallbackParameters( params );
 				wikipedia_page.load( Twinkle.close.callbacks.keep );
 				break;
 			default:
-				alert("Twinkle.close：未定义 " + code);
+				alert("Twinkle.close：未定義 " + code);
 				return;
 		}
 	}
@@ -345,9 +266,9 @@ Twinkle.close.callbacks = {
 	del: function (params) {
 		Morebits.wiki.addCheckpoint();
 
-		var page = new Morebits.wiki.page( params.title, "删除页面" );
+		var page = new Morebits.wiki.page( params.title, "刪除頁面" );
 
-		page.setEditSummary( '存废讨论通过：[[' + mw.config.get('wgPageName') + ']]' + Twinkle.getPref('deletionSummaryAd') );
+		page.setEditSummary( '議刪通過' + Twinkle.getPref('deletionSummaryAd') );
 		page.deletePage(function() {
 			page.getStatusElement().info("完成");
 			Twinkle.close.callbacks.talkend( params );
@@ -358,36 +279,22 @@ Twinkle.close.callbacks = {
 		var statelem = pageobj.getStatusElement();
 
 		if (!pageobj.exists()) {
-			statelem.error( "页面不存在，可能已被删除" );
+			statelem.error( "頁面不存在，可能已經刪除" );
 			return;
 		}
 
 		var text = pageobj.getPageText();
 		var params = pageobj.getCallbackParameters();
 
-		var pagetitle = mw.Title.newFromText(params.title);
-		if (pagetitle.getNamespaceId() % 2 === 0) {
-			var talkpagetitle = new mw.Title(pagetitle.getMainText(), pagetitle.getNamespaceId() + 1);
-			var talkpage = new Morebits.wiki.page(talkpagetitle.toString(), '标记讨论页');
-			var vfdkept = '{{vfd-kept|' + mw.config.get('wgPageName').split('/').slice(2).join('/') + '|' + params.messageData.label + '}}\n';
-			talkpage.setPrependText(vfdkept);
-			talkpage.setEditSummary('[[' + mw.config.get('wgPageName') + ']]：' + params.messageData.label + Twinkle.getPref('summaryAd'));
-			talkpage.setCreateOption('recreate');
-			talkpage.prepend();
-		}
+		var newtext = text.replace(/<noinclude>\s*\{\{(afd|議刪)\|[^{}]*?\}\}\s*<\/noinclude>\s*/gi, '');
+		newtext = newtext.replace(/\{\{(afd|議刪)\|[^{}]*?\}\}\s*/gi, '');
 
-		var newtext = text.replace(/<noinclude>\s*\{\{([rsaiftcmv]fd)\|[^{}]*?\}\}\s*<\/noinclude>\s*/gi, '');
-		newtext = newtext.replace(/\{\{([rsaiftcmv]fd)\|[^{}]*?\}\}\s*/gi, '');
-		if (params.code !== 'tk') {
-			newtext = newtext.replace(/\{\{(notability)\|[^{}]*?\}\}\n*/gi, '');
-			newtext = newtext.replace(/\{\{(substub)\|[^{}]*?\}\}\n*/gi, '');
-		}
 		if (newtext === text) {
-			statelem.warn("未找到存废讨论模板，可能已被移除");
+			statelem.warn("未找到議刪模板，可能已經移除");
 			Twinkle.close.callbacks.talkend( params );
 			return;
 		}
-		var editsummary = '存废讨论关闭：[[' + mw.config.get('wgPageName') + ']]';
+		var editsummary = '議刪結案';
 
 		pageobj.setPageText(newtext);
 		pageobj.setEditSummary(editsummary + Twinkle.getPref('summaryAd'));
@@ -400,7 +307,7 @@ Twinkle.close.callbacks = {
 	},
 
 	talkend: function (params) {
-		var wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), '关闭讨论');
+		var wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), '結案');
 		wikipedia_page.setCallbackParameters(params);
 		wikipedia_page.setPageSection(params.section);
 		wikipedia_page.load(Twinkle.close.callbacks.saveTalk);
@@ -410,39 +317,21 @@ Twinkle.close.callbacks = {
 		var text = pageobj.getPageText();
 		var params = pageobj.getCallbackParameters();
 
-		if (text.indexOf('{{delh') !== -1) {
-			statelem.error( "讨论已被关闭" );
+		if (text.indexOf('{{結案') !== -1) {
+			statelem.error( "討論已經關閉" );
 			return;
 		}
 
-		var sbegin = text.indexOf('<section begin=backlog />') !== -1;
-		var send = text.indexOf('<section end=backlog />') !== -1;
-		text = text.replace('\n<section begin=backlog />', '');
-		text = text.replace('\n<section end=backlog />', '');
+		var split = text.split('\n');
 
-		var bar = text.split('\n----\n');
-		var split = bar[0].split('\n');
-
-		text = split[0] + '\n{{delh|' + params.code + '}}\n' + split.slice(1).join('\n');
-		text += '\n----\n: ' + params.messageData.label;
+		text = split[0] + '\n{{結案-首|' + params.code;
 		if (params.remark) {
 			text += '：' + params.remark;
-		}
-		else {
+		} else {
 			text += '。';
 		}
-		text += '--~~~~\n{{delf}}';
 
-		if (bar[1]) {
-			text += '\n----\n' + bar.slice(1).join('\n----\n');
-		}
-		if (send) {
-			text += '\n<section end=backlog />';
-		}
-		if (sbegin) {
-			// guaranteed to be at tne end?
-			text += '\n<section begin=backlog />';
-		}
+		text = text + '--~~~~}}\n' + split.slice(1).join('\n') + '\n{{結案-尾}}';
 
 		pageobj.setPageText(text);
 		pageobj.setEditSummary('/* ' + params.title + ' */ ' + params.messageData.label + Twinkle.getPref('summaryAd'));
@@ -454,7 +343,7 @@ Twinkle.close.callbacks = {
 		var params = pageobj.getCallbackParameters();
 		$('strong a[href=#' + params.section + '] span').css('color', 'grey');
 	}
-}
+};
 
 })(jQuery);
 

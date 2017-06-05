@@ -1,19 +1,19 @@
 /**
  * vim: set noet sts=0 sw=8:
  * +-------------------------------------------------------------------------+
- * |                       === 警告：全局小工具文件 ===                      |
- * |                      对此文件的修改会影响许多用户。                     |
- * |                           修改前请联系维护者。                          |
+ * |                         === 警告：尚未完備 ===                            |
+ * |                           僅供測試，尚未翻譯                               |
+ * |                 修改或翻譯前請聯繫維護者，[[User:逆襲的天邪鬼]]              |
  * +-------------------------------------------------------------------------+
  *
- * 从Github导入[https://github.com/jimmyxu/twinkle]
+ * 从Github导入[https://github.com/vjudge1/twinkle]，branch: lzh
  *
  * ----------
  *
  * 这是Twinkle，新手、管理员及他们之间的用户的
- * 好搭档。请参见[[WP:TW]]以获取更多信息。
+ * 好搭档。请参见[[zh:WP:TW]]以获取更多信息。
  *
- * 维护者：~~~
+ * 维护者：[[User:逆襲的天邪鬼]]（文言維基）、[[User:Jimmy Xu]]（白話維基）
  */
 
 //<nowiki>
@@ -44,8 +44,8 @@ Twinkle.defaultConfig = {};
 Twinkle.defaultConfig.twinkle = {
 	 // General
 	summaryAd: "",
-	deletionSummaryAd: " ([[WP:TW|TW]])",
-	protectionSummaryAd: " ([[WP:TW|TW]])",
+	deletionSummaryAd: "（[[WP:TW|TW]]）",
+	protectionSummaryAd: "（[[WP:TW|TW]]）",
 	userTalkPageMode: "tab",
 	dialogLargeFont: false,
 	 // Block
@@ -67,8 +67,8 @@ Twinkle.defaultConfig.twinkle = {
 	watchSpeedyPages: [ ],
 	markSpeedyPagesAsPatrolled: true,
 	// these next two should probably be identical by default
-	notifyUserOnSpeedyDeletionNomination: [ "db", "g1", "g2", "g3", "g5", "g11", "g12", "g13", "g16", "a1", "a2", "a5", "a6", "f6", "r2", "r3" ],
-	welcomeUserOnSpeedyDeletionNotification: [ "db", "g1", "g2", "g3", "g5", "g11", "g12", "g13", "g16", "a1", "a2", "a5", "a6", "f6", "r2", "r3" ],
+	notifyUserOnSpeedyDeletionNomination: [ "db", "g3", "g4", "g5", "g8", "a1", "a2", "a3", "a4", "r2" ],
+	// welcomeUserOnSpeedyDeletionNotification: [ "db", "g1", "g2", "g3", "g5", "g11", "g12", "g13", "g16", "a1", "a2", "a5", "a6", "f6", "r2", "r3" ],
 	promptForSpeedyDeletionSummary: [],
 	openUserTalkPageOnSpeedyDelete: [  ],
 	deleteTalkPageOnDelete: true,
@@ -77,8 +77,8 @@ Twinkle.defaultConfig.twinkle = {
 	speedyWindowHeight: 500,
 	speedyWindowWidth: 800,
 	logSpeedyNominations: false,
-	speedyLogPageName: "CSD日志",
-	noLogOnSpeedyNomination: [ "o1" ],
+	speedyLogPageName: "提刪之誌",
+	noLogOnSpeedyNomination: [ "g1" ],
 	enlargeG11Input: true,
 	 // Unlink
 	unlinkNamespaces: [ "0", "10", "100", "118" ],
@@ -92,10 +92,6 @@ Twinkle.defaultConfig.twinkle = {
 	xfdWatchPage: "default",
 	xfdWatchUser: "default",
 	markXfdPagesAsPatrolled: true,
-	 // Copyvio
-	copyvioWatchPage: "default",
-	copyvioWatchUser: "default",
-	markCopyvioPagesAsPatrolled: true,
 	 // Hidden preferences
 	revertMaxRevisions: 50,
 	batchdeleteChunks: 50,
@@ -132,10 +128,8 @@ Twinkle.defaultConfig.friendly = {
 	 // Talkback
 	markTalkbackAsMinor: true,
 	insertTalkbackSignature: true,  // always sign talkback templates
-	talkbackHeading: "回复通告",
-	mailHeading: "您有新邮件！",
-	 // Shared
-	markSharedIPAsMinor: true
+	talkbackHeading: "回覆通告",
+	mailHeading: "您有新郵件！",
 };
 
 Twinkle.getPref = function twinkleGetPref( name ) {
@@ -332,7 +326,7 @@ $.ajax({
 	url: scriptpathbefore + "User:" + encodeURIComponent( mw.config.get("wgUserName")) + "/twinkleoptions.js" + scriptpathafter,
 	dataType: "text"
 })
-	.fail(function () {	mw.util.jsMessage( "未能加载twinkleoptions.js" ); })
+	.fail(function () {	mw.util.jsMessage( "未能載入twinkleoptions.js" ); })
 	.done(function ( optionsText ) {
 
 		// Quick pass if user has no options
@@ -392,23 +386,19 @@ Twinkle.load = function () {
 	}
 
 	// Set custom Api-User-Agent header, for server-side logging purposes
-	Morebits.wiki.api.setApiUserAgent( 'Twinkle~zh/2.0 (' + mw.config.get( 'wgDBname' ) + ')' );
+	Morebits.wiki.api.setApiUserAgent( 'Twinkle~lzh/0.0 (' + mw.config.get( 'wgDBname' ) + ')' );
 
 	// Load the modules in the order that the tabs should appears
 	// User/user talk-related
 	Twinkle.warn();
-	if ( Morebits.userIsInGroup('sysop') ) {
-		Twinkle.block();
-	}
-	// Twinkle.shared();
-	Twinkle.talkback();
+	// if ( Morebits.userIsInGroup('sysop') ) {
+	// 	Twinkle.block();
+	// }
 	// Deletion
 	Twinkle.speedy();
-	Twinkle.copyvio();
 	Twinkle.xfd();
-	Twinkle.image();
 	// Maintenance
-	Twinkle.protect();
+	// Twinkle.protect();
 	Twinkle.tag();
 	// Misc. ones last
 	Twinkle.diff();
