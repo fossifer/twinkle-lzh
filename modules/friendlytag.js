@@ -155,9 +155,22 @@ Twinkle.tag.article.tags = {
 	'文白相雜': '文白相雜',
 	'繁簡相雜': '繁簡相雜',
 	'無據': '文章沒有任何參考來源',
+	'文過短': '文章非常短，主題和內容極不完整',
+	'殘章': '文章對主題有了基本介紹，但是仍然沒寫完',
 	'文未準': '文章存在一些問題，需要修正。必須指出具體原因。選中此條後會顯示一些常用原因，另外也可以填寫自己的理由。',
 	'遷': '請求移動條目。請記得給出目標名稱和移動原因。',
 	'併': '請求與其他條目合併。請記得給出合併目標和原因。'
+};
+
+Twinkle.tag.article.tagaliases = {
+	'殘章': ['stub', '芻文'],
+	'文白相雜': ['NotClassicalChinese'],
+	'繁簡相雜': ['簡體'],
+	'無據': ['Unreferenced'],
+	'文未準': ['Disputed'],
+	'遷': ['Move'],
+	'併': ['Mergeto'],
+	'文過短': ['substub']
 };
 
 Twinkle.tag.article.dispute = {
@@ -185,7 +198,8 @@ Twinkle.tag.callbacks = {
 
 			switch (tagName) {
 				case '文白相雜':
-					currentTag += '{{文白相雜|~~~~~}}\n';
+				case '文過短':
+					currentTag += '{{' + tagName + '|~~~~~}}\n';
 					break;
 
 				case '文未準':
@@ -198,7 +212,7 @@ Twinkle.tag.callbacks = {
 						}
 						currentTag += params.tagParameters.disputeCustomReason;
 					}
-					currentTag += '}}\n'
+					currentTag += '}}\n';
 					break;
 
 				case '遷':
@@ -217,6 +231,10 @@ Twinkle.tag.callbacks = {
 						params.tagParameters.mergeTarget = Morebits.string.toUpperCaseFirstChar(params.tagParameters.mergeTarget.replace(/_/g, ' '));
 						currentTag += params.tagParameters.mergeTarget + '}}\n';
 					}
+					break;
+
+				case '殘章':
+					pageText = pageText + '\n{{殘章}}';
 					break;
 
 				default:
@@ -240,8 +258,25 @@ Twinkle.tag.callbacks = {
 
 		// Check for preexisting tags and separate tags into groupable and non-groupable arrays
 		for (i = 0; i < params.tags.length; i++) {
+			var found = false;
+
 			tagRe = new RegExp( '(\\{\\{' + params.tags[i] + '(\\||\\}\\})|\\|\\s*' + params.tags[i] + '\\s*=[a-z ]+\\d+)', 'im' );
-			if( !tagRe.exec( pageText ) ) {
+			if (tagRe.exec(pageText)) {
+				found = true;
+			}
+
+			if (Twinkle.tag.article.tagaliases) {
+				var aliases = Twinkle.tag.article.tagaliases[params.tags[i]];
+				for (var j=0; j<aliases.length; j++) {
+					tagRe = new RegExp( '(\\{\\{' + aliases[j] + '(\\||\\}\\})|\\|\\s*' + aliases[j] + '\\s*=[a-z ]+\\d+)', 'im' );
+					if (tagRe.exec(pageText)) {
+						found = true;
+						break;
+					}
+				}
+			}
+
+			if (!found) {
 				tags = tags.concat( params.tags[i] );
 			} else {
 				Morebits.status.warn( '信息', '在頁面上找到{{' + params.tags[i] +

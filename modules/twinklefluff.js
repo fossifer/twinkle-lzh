@@ -121,7 +121,7 @@ Twinkle.fluff = {
 				Twinkle.fluff.revertToRevision(oldrev);
 			});
 			revertToRevisionLink.appendChild( spanTag( 'Black', '[' ) );
-			revertToRevisionLink.appendChild( spanTag( 'SaddleBrown', '恢復此版本' ) );
+			revertToRevisionLink.appendChild( spanTag( 'SaddleBrown', '復此本' ) );
 			revertToRevisionLink.appendChild( spanTag( 'Black', ']' ) );
 
 			otitle.insertBefore( revertToRevision, otitle.firstChild );
@@ -140,7 +140,7 @@ Twinkle.fluff = {
 					Twinkle.fluff.revertToRevision(newrev);
 				});
 				revertToRevisionLink.appendChild( spanTag( 'Black', '[' ) );
-				revertToRevisionLink.appendChild( spanTag( 'SaddleBrown', '恢復此版本' ) );
+				revertToRevisionLink.appendChild( spanTag( 'SaddleBrown', '復此本' ) );
 				revertToRevisionLink.appendChild( spanTag( 'Black', ']' ) );
 				ntitle.insertBefore( revertToRevision, ntitle.firstChild );
 
@@ -174,15 +174,15 @@ Twinkle.fluff = {
 				});
 
 				agfLink.appendChild( spanTag( 'Black', '[' ) );
-				agfLink.appendChild( spanTag( 'DarkOliveGreen', '回退（AGF）' ) );
+				agfLink.appendChild( spanTag( 'DarkOliveGreen', '撤（善）' ) );
 				agfLink.appendChild( spanTag( 'Black', ']' ) );
 
 				vandLink.appendChild( spanTag( 'Black', '[' ) );
-				vandLink.appendChild( spanTag( 'Red', '回退（破壞）' ) );
+				vandLink.appendChild( spanTag( 'Red', '撤（惡）' ) );
 				vandLink.appendChild( spanTag( 'Black', ']' ) );
 
 				normLink.appendChild( spanTag( 'Black', '[' ) );
-				normLink.appendChild( spanTag( 'SteelBlue', '回退' ) );
+				normLink.appendChild( spanTag( 'SteelBlue', '撤' ) );
 				normLink.appendChild( spanTag( 'Black', ']' ) );
 
 				agfNode.appendChild(agfLink);
@@ -278,7 +278,7 @@ Twinkle.fluff.callbacks = {
 				self.statelem.error( '由用戶取消。' );
 				return;
 			}
-			var summary = Twinkle.fluff.formatSummary("回退到由$USER做出的修訂版本" + revertToRevID, revertToUser, optional_summary);
+			var summary = Twinkle.fluff.formatSummary("撤至$USER之本" + revertToRevID, revertToUser, optional_summary);
 
 			var query = {
 				'action': 'edit',
@@ -423,15 +423,15 @@ Twinkle.fluff.callbacks = {
 			}
 			userHasAlreadyConfirmedAction = true;
 
-			summary = Twinkle.fluff.formatSummary("回退$USER做出的出於[[WP:AGF|善意]]的編輯", self.params.user, extra_summary);
+			summary = Twinkle.fluff.formatSummary("$USER雖善，其纂仍需撤之", self.params.user, extra_summary);
 			break;
 
 		case 'vand':
 
-			summary = "回退[[Special:Contributions/" +
+			summary = "去[[Special:Contributions/" +
 				self.params.user + "|" + self.params.user + "]] ([[User talk:" + self.params.user + "|對話]])" +
-				"做出的 " + self.params.count + " 次編輯，到由" +
-				self.params.gooduser + "做出的前一個修訂版本 "  + Twinkle.getPref('summaryAd');
+				"之 " + self.params.count + " 作為" +
+				self.params.gooduser + "之本耳"  + Twinkle.getPref('summaryAd');
 			break;
 
 		case 'norm':
@@ -447,7 +447,7 @@ Twinkle.fluff.callbacks = {
 				userHasAlreadyConfirmedAction = true;
 			}
 
-			summary = Twinkle.fluff.formatSummary("回退$USER做出的" + self.params.count + "次編輯", self.params.user, extra_summary);
+			summary = Twinkle.fluff.formatSummary("去$USER之" + self.params.count + "作", self.params.user, extra_summary);
 			break;
 		}
 

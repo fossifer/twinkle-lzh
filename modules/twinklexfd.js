@@ -119,7 +119,7 @@ Twinkle.xfd.callbacks = {
 			var usertalkpage = new Morebits.wiki.page(talkPageName, "通知頁面建立者（" + initialContrib + "）");
 			var notifytext = "\n{{subst:AFDNote|" + Morebits.pageNameNorm + "}}--~~~~";
 			usertalkpage.setAppendText(notifytext);
-			usertalkpage.setEditSummary("通知：頁面[[" + Morebits.pageNameNorm + "]]存廢討論提名" + Twinkle.getPref('summaryAd'));
+			usertalkpage.setEditSummary("議刪[[" + Morebits.pageNameNorm + "]]" + Twinkle.getPref('summaryAd'));
 			usertalkpage.setCreateOption('recreate');
 			switch (Twinkle.getPref('xfdWatchUser')) {
 				case 'yes':
@@ -161,7 +161,7 @@ Twinkle.xfd.callbacks = {
 		}
 
 		pageobj.setPageText(tag + text);
-		pageobj.setEditSummary("頁面存廢討論：[[" + params.logpage + "#" + Morebits.pageNameNorm + "]]" + Twinkle.getPref('summaryAd'));
+		pageobj.setEditSummary("議刪：[[" + params.logpage + "#" + Morebits.pageNameNorm + "]]" + Twinkle.getPref('summaryAd'));
 		switch (Twinkle.getPref('xfdWatchPage')) {
 			case 'yes':
 				pageobj.setWatchlist(true);
@@ -183,8 +183,8 @@ Twinkle.xfd.callbacks = {
 	todaysList: function(pageobj) {
 		var params = pageobj.getCallbackParameters();
 
-		pageobj.setAppendText("\n== [[:" + Morebits.pageNameNorm + ']]' + " ==\n由：" + Morebits.string.formatReasonText(params.reason) + " --~~~~");
-		pageobj.setEditSummary("添加[[" + Morebits.pageNameNorm + "]]" + Twinkle.getPref('summaryAd'));
+		pageobj.setAppendText("\n== [[:" + Morebits.pageNameNorm + ']]' + " ==\n{{去}}，由：" + Morebits.string.formatReasonText(params.reason) + " --~~~~");
+		pageobj.setEditSummary("增[[" + Morebits.pageNameNorm + "]]" + Twinkle.getPref('summaryAd'));
 		switch (Twinkle.getPref('xfdWatchDiscussion')) {
 			case 'yes':
 				pageobj.setWatchlist(true);

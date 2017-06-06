@@ -105,7 +105,7 @@ Twinkle.warn.messages = {
 		'uw-civil1': '不文明（提醒）',
 		'uw-civil2': '不文明（警告）',
 		'uw-editwar': '編輯戰',
-		'uw-baduserpage': '政治、宗教用戶頁'
+		'uw-politicaluserpage': '政治、宗教用戶頁'
 	},
 };
 Twinkle.warn.summary = {
@@ -122,7 +122,7 @@ Twinkle.warn.summary = {
 	'uw-civil1': '提醒：不文明',
 	'uw-civil2': '警告：不文明',
 	'uw-editwar': '警告：編輯戰',
-	'uw-baduserpage': '提醒：禁止政治、宗教用戶頁'
+	'uw-politicaluserpage': '提醒：禁止政治、宗教用戶頁'
 };
 Twinkle.warn.heading = {
 	'*': '提醒',

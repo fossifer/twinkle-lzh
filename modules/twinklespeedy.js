@@ -155,6 +155,23 @@ Twinkle.speedy.initDialog = function twinklespeedyInitDialog(callbackfunc) {
 				]
 			} );
 		}
+        deleteOptions.append( {
+                type: 'checkbox',
+                list: [
+                    {
+                        label: '不刪除，而是移動到「稿」',
+                        value: 'movetodraft',
+                        name: 'movetodraft',
+                        tooltip: "不刪除頁面，而是將其移動到「稿」名字空間。",
+                        checked: false,
+                        disabled: (mw.config.get('wgNamespaceNumber') === 106 || mw.config.get('wgNamespaceNumber') === 107),
+                        event: function( event ) {
+                            event.stopPropagation();
+                        }
+                    }
+                ]
+            } );
+
 		deleteOptions.append( {
 				type: 'checkbox',
 				list: [
@@ -601,6 +618,10 @@ Twinkle.speedy.normalizeHash = {
 	'a2': 'a2',
 	'a3': 'a3',
 	'a4': 'a4',
+    'r1': 'r1',
+    'r2': 'r2',
+    'r3': 'r3',
+    'r4': 'r4',
 	'c1': 'c1',
 };
 
@@ -681,10 +702,22 @@ Twinkle.speedy.callbacks = {
 				return Morebits.status.error("詢問理由", "你不給我理由…我就…不管了…");
 			}
 			thispage.setEditSummary( reason + Twinkle.getPref('deletionSummaryAd') );
-			thispage.deletePage(function() {
-				thispage.getStatusElement().info("完成");
-				Twinkle.speedy.callbacks.sysop.deleteTalk( params );
-			});
+
+            if (params.movetodraft) {
+                thispage.setMoveTalkPage(true);
+                thispage.setMoveSuppressRedirect(true);
+                thispage.setMoveDestination('稿:' + mw.config.get('wgPageName'));
+                thispage.move(function() {
+                    thispage.getStatusElement().info("完成");
+                    Twinkle.speedy.callbacks.sysop.deleteRedirects( params );
+                });
+            } else {
+                thispage.deletePage(function() {
+                    thispage.getStatusElement().info("完成");
+                    Twinkle.speedy.callbacks.sysop.deleteTalk( params );
+                });
+            }
+
 
 			// look up initial contributor. If prompting user for deletion reason, just display a link.
 			// Otherwise open the talk page directly
@@ -905,8 +938,7 @@ Twinkle.speedy.callbacks = {
 						notifytext = "\n{{subst:db-notice|target=" + Morebits.pageNameNorm;
 						notifytext += (params.welcomeuser ? "" : "|nowelcome=yes") + "}}--~~~~";
 
-						var editsummary = "通知：";
-						editsummary += "頁[[" + Morebits.pageNameNorm + "]]將刪";
+						var editsummary = "頁[[" + Morebits.pageNameNorm + "]]將刪";
 
 						usertalkpage.setAppendText(notifytext);
 						usertalkpage.setEditSummary(editsummary + Twinkle.getPref('summaryAd'));
@@ -1067,6 +1099,7 @@ Twinkle.speedy.callback.evaluateSysop = function twinklespeedyCallbackEvaluateSy
 		watch: watchPage,
 		deleteTalkPage: form.talkpage && form.talkpage.checked,
 		deleteRedirects: form.redirects.checked,
+        movetodraft: form.movetodraft.checked,
 		openUserTalk: form.openusertalk.checked,
 		promptForSummary: promptForSummary,
 		templateParams: Twinkle.speedy.getParameters( form, values )
